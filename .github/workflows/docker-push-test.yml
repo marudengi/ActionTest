@@ -38,17 +38,19 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/node-app
       - name: Run PWD
         run: pwd
+        
       - name: check directory
         run: |
-          ls -al ./Backend
-          ls -al ./Frontend
+          cat ./Backend/Dockerfile
+          cat ./Frontend/Dockerfile
+          
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: |
-            /home/runner/work/ActionTest/ActionTest/Frontend/Dockerfile
-            /home/runner/work/ActionTest/ActionTest/Backend/Dockerfile
+            ./Frontend/Dockerfile
+            ./Backend/Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:latest
