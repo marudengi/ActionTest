@@ -41,6 +41,7 @@ jobs:
       - name: check directory
         run: |
           ls -al ./Backend
+          cd ..
           ls -al ./Frotend
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
