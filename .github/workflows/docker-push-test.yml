@@ -36,6 +36,8 @@ jobs:
           images: |
             ${{ secrets.DOCKER_USERNAME }}/react-nginx-app
             ${{ secrets.DOCKER_USERNAME }}/node-app
+      - name: Run PWD
+        run: pwd
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
