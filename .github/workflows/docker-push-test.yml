@@ -46,6 +46,6 @@ jobs:
             ./Backend/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:$(date + '%Y-%m-%d')
-            ${{ secrets.DOCKER_USERNAME }}/node-app:$(date + '%Y-%m-%d')
+            ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:latest
+            ${{ secrets.DOCKER_USERNAME }}/node-app:latest
             labels: ${{ steps.meta.outputs.labels }}
