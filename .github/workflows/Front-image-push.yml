@@ -28,28 +28,17 @@ jobs:
           
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-        
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: |
-            ${{ secrets.DOCKER_USERNAME }}/react-nginx-app
-            ${{ secrets.DOCKER_USERNAME }}/node-app
-      - name: Run PWD
-        run: pwd
-        
-      - name: check directory
-        run: |
-          cat ./Backend/Dockerfile
-          cat ./Frontend/Dockerfile
           
-      - name: Build and push Docker image
+      - name: Build and push Frontend image
         uses: docker/build-push-action@v2
         with:
-          context: |
-            Frontend
+          context: Frontend
           push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:latest
-            ${{ secrets.DOCKER_USERNAME }}/node-app:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:latest
+          
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v2
+        with:
+          context: Backend
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/node-app:latest
