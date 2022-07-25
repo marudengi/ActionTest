@@ -44,8 +44,8 @@ jobs:
         with:
           context: .
           file: |
-            ./Frontend/Dockerfile
-            ./Backend/Dockerfile
+            /home/runner/work/ActionTest/ActionTest/Frontend/Dockerfile
+            /home/runner/work/ActionTest/ActionTest/Backend/Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:latest
