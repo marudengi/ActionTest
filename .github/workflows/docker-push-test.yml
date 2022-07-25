@@ -48,8 +48,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: |
-            Frontend/
-            Backend/
+            Frontend
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:latest
