@@ -20,9 +20,6 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
         
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
-        
       - name: Log in to Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
@@ -49,6 +46,6 @@ jobs:
             ./Backend/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:${{env.RELEASE_VERSION }}
-            ${{ secrets.DOCKER_USERNAME }}/node-app:${{env.RELEASE_VERSION }}
+            ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:$(date + '%Y-%m-%d')
+            ${{ secrets.DOCKER_USERNAME }}/node-app:$(date + '%Y-%m-%d')
             labels: ${{ steps.meta.outputs.labels }}
