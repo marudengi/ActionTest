@@ -9,3 +9,7 @@
 ### Frontend
 - react
 - nginx
+
+### Dockerfile path
+- /Frontend/
+- /Backend/
