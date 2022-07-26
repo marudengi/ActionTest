@@ -1,6 +1,6 @@
 # ActionTest
 
-## Backend와 Frontend의 Dockerfile 배포 자동화
+## git push시 Backend와 Frontend의 Dockerfile Dockerhub에 업로드 자동화
 
 ### Backend
 - nodejs
