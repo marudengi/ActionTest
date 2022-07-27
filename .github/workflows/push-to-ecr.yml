@@ -63,12 +63,5 @@ jobs:
           #auto_tag: # optional
           # do not start the docker daemon
           #daemon_off: # optional
-          
-      - name: Build and push Backend image
-        uses: docker/build-push-action@v2
-        with:
-          context: Backend
-          push: true
-          tags: ${{ secrets.AWS_USER_NAME }}/node-app:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
