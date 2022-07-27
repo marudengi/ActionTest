@@ -63,5 +63,4 @@ jobs:
           #auto_tag: # optional
           # do not start the docker daemon
           #daemon_off: # optional
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache_from: ${{ secrets.REGISTY }}/sample
