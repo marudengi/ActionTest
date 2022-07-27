@@ -44,49 +44,16 @@ jobs:
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
           
-      - name: Docker ECR
-        # You may pin to the exact commit or the version.
-        # uses: appleboy/docker-ecr-action@174bc7ab545bf5c4f4492240c4d839a987643559
-        uses: appleboy/docker-ecr-action@v0.0.3
+      - name: upload image to ECR
+        uses: appleboy/docker-ecr-action@master
         with:
-          # amazon access key
-          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }} # optional
-          # amazon secret access key
-          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # optional
-          # docker registry
-          registry: ${{ secrets.REGISTY }} # optional
-          # amazon region, defaults to us-east-1
-          region: us-east-2 # optional, default is us-east-1
-          # repository name for the image
-          repo: sample # optional
-          # filename of ecr lifecycle json policy
-          #lifecycle_policy: # optional
-          # filename of ecr repository json policy
-          #repository_policy: # optional
-          # repository tag for the image, defaults to latest
-          tags: ${{ steps.tag_version.outputs.changelog }} # optional, default is latest
-          # dockerfile to be used, defaults to Dockerfile
-          dockerfile: Backend/Dockerfile # optional, default is Dockerfile
-          # auth token for the registry
-          #auth: # optional
-          # the context path to use, defaults to root of the git repo
-          context: Backend # optional, default is .
-          # replace existing matched image tags
-#           force_tag: true # optional
-          # enable insecure communication to this registry
-          #insecure: # optional
-          # use a mirror registry instead of pulling images directly from the central Hub
-          #mirror: # optional
-          # use for pass bridge ip
-          #bip: # optional
-          # set custom dns servers for the container
-          #custom_dns: # optional
-          # supports aufs, overlay or vfs drivers
-          #storage_driver: # optional
-          # images to consider as cache sources
-          #cache_from: # optional
-          # default build tags
-#           auto_tag: true # optional
-          # do not start the docker daemon
-          #daemon_off: # optional
-#           cache_from: ${{ secrets.REGISTY }}/sample
+          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          registry: ${{ secrets.REGISTRY }}
+          cache_from: ${{ secrets.CACHE }}
+          repo: sample
+          region: us-east-2
+          auto_tag: true
+          daemon_off: false
+          dockerfile: Backend/Dockerfile
+          context: Backend
