@@ -64,7 +64,7 @@ jobs:
           # filename of ecr repository json policy
           #repository_policy: # optional
           # repository tag for the image, defaults to latest
-          tags: dev-${{github.sha}} # optional, default is latest
+          tags: ${{ steps.tag_version.outputs.changelog }} # optional, default is latest
           # dockerfile to be used, defaults to Dockerfile
           dockerfile: Backend/Dockerfile # optional, default is Dockerfile
           # auth token for the registry
