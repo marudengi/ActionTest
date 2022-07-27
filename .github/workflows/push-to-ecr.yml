@@ -58,7 +58,7 @@ jobs:
           # the context path to use, defaults to root of the git repo
           context: Backend # optional, default is .
           # replace existing matched image tags
-          #force_tag: # optional
+          force_tag: true # optional
           # enable insecure communication to this registry
           #insecure: # optional
           # use a mirror registry instead of pulling images directly from the central Hub
