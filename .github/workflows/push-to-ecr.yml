@@ -58,7 +58,7 @@ jobs:
           # the context path to use, defaults to root of the git repo
           context: Backend # optional, default is .
           # replace existing matched image tags
-          force_tag: true # optional
+#           force_tag: true # optional
           # enable insecure communication to this registry
           #insecure: # optional
           # use a mirror registry instead of pulling images directly from the central Hub
@@ -72,7 +72,7 @@ jobs:
           # images to consider as cache sources
           #cache_from: # optional
           # default build tags
-          auto_tag: true # optional
+#           auto_tag: true # optional
           # do not start the docker daemon
           #daemon_off: # optional
 #           cache_from: ${{ secrets.REGISTY }}/sample
