@@ -17,16 +17,10 @@ jobs:
           
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-          
-      - name: Build and push Frontend image
-        uses: docker/build-push-action@v2
-        with:
-          context: Frontend
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:latest
+      
       - name: Docker ECR
-  # You may pin to the exact commit or the version.
-  # uses: appleboy/docker-ecr-action@174bc7ab545bf5c4f4492240c4d839a987643559
+        # You may pin to the exact commit or the version.
+        # uses: appleboy/docker-ecr-action@174bc7ab545bf5c4f4492240c4d839a987643559
         uses: appleboy/docker-ecr-action@v0.0.3
         with:
           # amazon access key
@@ -69,11 +63,12 @@ jobs:
           #auto_tag: # optional
           # do not start the docker daemon
           #daemon_off: # optional
+          
       - name: Build and push Backend image
         uses: docker/build-push-action@v2
         with:
           context: Backend
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/node-app:latest
+          tags: ${{ secrets.AWS_USER_NAME }}/node-app:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
