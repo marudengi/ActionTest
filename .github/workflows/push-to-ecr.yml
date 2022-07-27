@@ -1,0 +1,57 @@
+name: Publish Docker image
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: [ "main" ]
+    
+
+jobs:
+  push_to_registry:
+    container:
+      image: harbor.address/devops    
+    
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+          
+      - name: ECR Login
+        # You may pin to the exact commit or the version.
+        # uses: thalesvon/ecr-login@1c02070621b251e7ac6bab007960dd670d75c3f5
+        id: login-ecr
+        uses: thalesvon/ecr-login@1.0.0
+        
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+          
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v2
+        with:
+          context: Frontend
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/react-nginx-app:latest
+          
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v2
+        with:
+          context: Backend
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/node-app:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
