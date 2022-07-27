@@ -18,6 +18,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       
+#       - name: Generate Docker metadata
+#         id: meta
+#         uses: docker/metadata-action@v3
+#         with:
+#           images: docker.io/${{ github.repository }}
+#           tags: |
+#             type=ref,event=branch
+#             type=semver,pattern={{version}}
+#             type=semver,pattern={{major}}.{{minor}}
+#           flavor: |
+#             latest=true
+      
       - name: Docker ECR
         # You may pin to the exact commit or the version.
         # uses: appleboy/docker-ecr-action@174bc7ab545bf5c4f4492240c4d839a987643559
@@ -60,7 +72,7 @@ jobs:
           # images to consider as cache sources
           #cache_from: # optional
           # default build tags
-          #auto_tag: # optional
+          auto_tag: true # optional
           # do not start the docker daemon
           #daemon_off: # optional
           cache_from: ${{ secrets.REGISTY }}/sample
