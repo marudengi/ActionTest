@@ -29,42 +29,21 @@ jobs:
 #             type=semver,pattern={{major}}.{{minor}}
 #           flavor: |
 #             latest=true
-      
-      - name: GitHub Tag (with tags filter)
-      # You may pin to the exact commit or the version.
-      # uses: IIlyichev/github-tag-action@8b40ce208f6d7f902a3ee8c761f76db20fd87475
-        uses: IIlyichev/github-tag-action@v6.3
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
         with:
-          # Required for permission to tag the repo.
-          github_token: ${{ GIT_ACCESS_TOKEN }}
-          # Which type of bump to use when none explicitly provided when commiting to a release branch (default: `patch`).
-#           default_bump: # optional, default is patch
-          # Which type of bump to use when none explicitly provided when commiting to a prerelease branch (default: `prerelease`).
-#           default_prerelease_bump: # optional, default is prerelease
-          # A prefix to the tag name (default: `v`).
-#           tag_prefix: # optional, default is v
-          # Tags filter string.
-#           tag_filter: # optional
-          # A suffix to a pre-release tag name (default: `<branch>`).
-#           append_to_pre_release_tag: # optional
-          # Custom tag name. If specified, it overrides bump settings.
-#           custom_tag: # optional
-          # Comma separated list of release rules. Format: `<keyword>:<release_type>`. Example: `hotfix:patch,pre-feat:preminor`.
-#           custom_release_rules: # optional
-          # Comma separated list of branches (bash reg exp accepted) that will generate the release tags. Other branches and pull-requests generate versions postfixed with the commit hash and do not generate any tag. Examples: `master` or `.*` or `release.*,hotfix.*,master`...
-#           release_branches: # optional, default is master,main
-          # Comma separated list of branches (bash reg exp accepted) that will generate pre-release tags.
-#           pre_release_branches: # optional
-          # The commit SHA value to add the tag. If specified, it uses this value instead GITHUB_SHA. It could be useful when a previous step merged a branch into github.ref.
-          commit_sha: true # optional
-          # Boolean to create an annotated tag rather than lightweight.
-#           create_annotated_tag: # optional, default is false
-          # Boolean to fetch all tags for a repo (if false, only the last 100 will be fetched).
-#           fetch_all_tags: # optional, default is false
-          # Do not perform tagging, just calculate next version and changelog, then exit.
-#           dry_run: # optional, default is false
+          github_token: ${{ secrets.GIT_ACCESS_TOKEN }}
       
       
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+          
       - name: Docker ECR
         # You may pin to the exact commit or the version.
         # uses: appleboy/docker-ecr-action@174bc7ab545bf5c4f4492240c4d839a987643559
