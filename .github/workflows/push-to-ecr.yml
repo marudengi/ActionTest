@@ -75,4 +75,4 @@ jobs:
           auto_tag: true # optional
           # do not start the docker daemon
           #daemon_off: # optional
-          cache_from: ${{ secrets.REGISTY }}/sample
+#           cache_from: ${{ secrets.REGISTY }}/sample
