@@ -53,7 +53,7 @@ jobs:
           cache_from: ${{ secrets.CACHE }}
           repo: sample
           region: us-east-2
-          auto_tag: true
+          tags: ${{ steps.tag_version.outputs.new_tag }}
           daemon_off: false
           dockerfile: Backend/Dockerfile
           context: Backend
