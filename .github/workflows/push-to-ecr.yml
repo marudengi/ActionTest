@@ -40,11 +40,11 @@ jobs:
           # repository tag for the image, defaults to latest
           #tags: # optional, default is latest
           # dockerfile to be used, defaults to Dockerfile
-          dockerfile: backend/Dockerfile # optional, default is Dockerfile
+          dockerfile: Backend/Dockerfile # optional, default is Dockerfile
           # auth token for the registry
           #auth: # optional
           # the context path to use, defaults to root of the git repo
-          context: backend # optional, default is .
+          context: Backend # optional, default is .
           # replace existing matched image tags
           #force_tag: # optional
           # enable insecure communication to this registry
