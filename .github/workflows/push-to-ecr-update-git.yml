@@ -66,11 +66,16 @@ jobs:
           
           docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:latest
+          
   deploy:
     name: Deploy
     runs-on: self-hosted
     needs: push_to_registry
     steps:
+    
+      - name: Check out the repo
+        uses: actions/checkout@v3
+        
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v1
         with:
