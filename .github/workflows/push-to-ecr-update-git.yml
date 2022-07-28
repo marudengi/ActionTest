@@ -44,54 +44,72 @@ jobs:
         
 
       - name: Build, tag, and push Backend docker image to Amazon ECR
+        uses: docker/build-push-action@v2
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: backend
           IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
-        run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        with:
+          context: Backend
+          push: true
+          tags: | 
+            $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            $REGISTRY/$REPOSITORY:latest
+          cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
+          cache-to: type=gha,mode=max
+#         run: |
+#           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
+#           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           
-          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:latest
+#           docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
+#           docker push $REGISTRY/$REPOSITORY:latest
           
       - name: Build, tag, and push Frontend docker image to Amazon ECR
+        uses: docker/build-push-action@v2
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: frontend
           IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
-        run: |  
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          
-          docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:latest
-          
-  deploy:
-    name: Deploy
-    runs-on: self-hosted
-    needs: push_to_registry
-    steps:
-    
-      - name: Check out the repo
-        uses: actions/checkout@v3
-        
-      - name: Setup Kustomize
-        uses: imranismail/setup-kustomize@v1
         with:
-          kustomize-version: "3.8.8"
+          context: Frontend
+          push: true
+          tags: | 
+            $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            $REGISTRY/$REPOSITORY:latest
+          cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
+          cache-to: type=gha,mode=max
+#         run: |  
+#           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
+#           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          
+#           docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
+#           docker push $REGISTRY/$REPOSITORY:latest
+          
+#   deploy:
+#     name: Deploy
+#     runs-on: self-hosted
+#     needs: push_to_registry
+#     steps:
+    
+#       - name: Check out the repo
+#         uses: actions/checkout@v3
+        
+#       - name: Setup Kustomize
+#         uses: imranismail/setup-kustomize@v1
+#         with:
+#           kustomize-version: "3.8.8"
 
-      - name: Update Kubernetes resources
-        run: |
-          pwd
-          ls -al
-          echo "#########################################"
-          cd k8s
-          git pull
-          git config --global user.email "${{secrets.GIT_EMAIL}}"
-          git config --global user.password "${{secrets.GIT_ACCESS_TOKEN}}"
-          git checkout main
-          kustomize edit set image $REGISTRY/$REPOSITORY:$IMAGE_TAG
-      - name: Sync ArgoCD App
-        run: |
-          argocd --insecure app sync ${{ secrets.ARGOCD_APP_PRODUCTION }}
+#       - name: Update Kubernetes resources
+#         run: |
+#           pwd
+#           ls -al
+#           echo "#########################################"
+#           cd k8s
+#           git pull
+#           git config --global user.email "${{secrets.GIT_EMAIL}}"
+#           git config --global user.password "${{secrets.GIT_ACCESS_TOKEN}}"
+#           git checkout main
+#           kustomize edit set image $REGISTRY/$REPOSITORY:$IMAGE_TAG
+#       - name: Sync ArgoCD App
+#         run: |
+#           argocd --insecure app sync ${{ secrets.ARGOCD_APP_PRODUCTION }}
