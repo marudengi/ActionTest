@@ -1,4 +1,4 @@
-name: Push Docker image to ECR
+name: Push Docker image to ECR and update to Github
 
 on:
   release:
@@ -12,6 +12,11 @@ jobs:
     name: Push Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
+      
+      - name: Set env
+        run: echo "IMAGE_TAG=$(echo ${GITHUB_REF##*/}-${GITHUB_SHA::6})" >> $GITHUB_ENV 
+    
+    
       - name: Check out the repo
         uses: actions/checkout@v3
           
@@ -35,8 +40,9 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        
 
       - name: Build, tag, and push Backend docker image to Amazon ECR
         env:
@@ -46,6 +52,7 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
           
       - name: Build, tag, and push Frontend docker image to Amazon ECR
         env:
@@ -55,3 +62,16 @@ jobs:
         run: |  
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
+          
+#       - name: Update Version
+#         run: |
+#             git_hash=${{ steps.vars.outputs.sha_short }}
+#             version=$(cat ./Backend//values.yaml | grep version: | awk '{print $2}')
+#             sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./charts/helm-example/values.yaml
+
+#       - name: Commit and push changes
+#         uses: devops-infra/action-commit-push@v0.3
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           commit_message: Version updated
