@@ -67,24 +67,26 @@ jobs:
           docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:latest
           
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-18.04
-    needs: push_to_registry
-    steps:
-    - name: 'Checkout'
-      uses: actions/checkout@master
-    - name: 'Kustomize Build'
-      uses: karancode/kustomize-github-action@master
-      with:
-        kustomize_version: '3.0.0'
-        kustomize_build_dir: '.'
-        kustomize_comment: true
-        kustomize_output_file: "gitops/rendered.yaml"
-        kustomize_build_options: "--load_restrictor none"
-        enable_alpha_plugins: true
-      env:
-        GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+      - uses: imranismail/setup-kustomize@v1
+      - run: |
+          kustomize edit set image $REGISTRY/backend:$IMAGE_TAG
+          kustomize edit set image $REGISTRY/frontend:$IMAGE_TAG
+          git add .
+          git commit -m "Set `app` image tag to `$IMAGE_TAG`"
+          git push
+#     - name: 'Checkout'
+#       uses: actions/checkout@master
+#     - name: 'Kustomize Build'
+#       uses: karancode/kustomize-github-action@master
+#       with:
+#         kustomize_version: '3.0.0'
+#         kustomize_build_dir: '.'
+#         kustomize_comment: true
+#         kustomize_output_file: "gitops/rendered.yaml"
+#         kustomize_build_options: "--load_restrictor none"
+#         enable_alpha_plugins: true
+#       env:
+#         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
 #       - name: Check out the repo
 #         uses: actions/checkout@v3
         
