@@ -53,7 +53,7 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           
-          docker tag $REGISTRY/$REPOSITORY:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:latest
           
       - name: Build, tag, and push Frontend docker image to Amazon ECR
@@ -65,7 +65,7 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           
-          docker tag $REGISTRY/$REPOSITORY:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG          
+          docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:latest
           
 #       - name: Update Version
