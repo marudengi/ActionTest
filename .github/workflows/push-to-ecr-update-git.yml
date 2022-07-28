@@ -51,9 +51,9 @@ jobs:
           IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
-          docker tag $REGISTRY/$REPOSITORY:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          
+          docker tag $REGISTRY/$REPOSITORY:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:latest
           
       - name: Build, tag, and push Frontend docker image to Amazon ECR
@@ -63,9 +63,9 @@ jobs:
           IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
         run: |  
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
-          docker tag $REGISTRY/$REPOSITORY:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          
+          docker tag $REGISTRY/$REPOSITORY:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG          
           docker push $REGISTRY/$REPOSITORY:latest
           
 #       - name: Update Version
