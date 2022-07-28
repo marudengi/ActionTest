@@ -51,7 +51,7 @@ jobs:
           IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $REGISTRY/$REPOSITORY:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
           
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:latest
@@ -63,7 +63,7 @@ jobs:
           IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
         run: |  
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $REGISTRY/$REPOSITORY:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
           
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:latest
