@@ -33,10 +33,7 @@ jobs:
           aws-region: us-east-2
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-#       - name: Login to Amazon ECR Private
-#         id: login-ecr
-#         uses: aws-actions/amazon-ecr-login@v1     
+          
       - name: Login to ECR
         uses: docker/login-action@v1
         with:
@@ -44,30 +41,14 @@ jobs:
           
       - name: Build and push
         uses: docker/build-push-action@v2 # build-push-action 사용
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: react-app
-          IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
         with:
           context: ./Frontend
           push: true
-          tags: ${{ secrets.REGISTRY }}/react-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+          tags: |
+            ${{ secrets.REGISTRY }}/react-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.REGISTRY }}/react-app:latest
           cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
           cache-to: type=gha,mode=max
-
-          
-#       - name: Build, tag, and push Frontend docker image to Amazon ECR
-#         env:
-#           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#           REPOSITORY: react-app
-#           IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
-          
-#         run: |  
-#           docker build --cache-from $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
-#           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          
-#           docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-#           docker push $REGISTRY/$REPOSITORY:latest
           
   push_to_registry_backend_hello:  
     name: Push Backend Hello Docker image to ECR
@@ -95,22 +76,21 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Login to Amazon ECR Private
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-        
-      - name: Build, tag, and push Backend docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: hello-app
-          IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+      - name: Login to ECR
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.REGISTRY }}
           
-        run: |
-          docker build --cache-from $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/hello-api/
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          
-          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:latest
+      - name: Build and push
+        uses: docker/build-push-action@v2 # build-push-action 사용
+        with:
+          context: ./Backend/hello-api
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY }}/hello-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.REGISTRY }}/hello-app:latest
+          cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
+          cache-to: type=gha,mode=max
 
   push_to_registry_backend_hi:  
     name: Push Backend hi Docker image to ECR
@@ -138,22 +118,21 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Login to Amazon ECR Private
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push Backend docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: hi-app
-          IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
-
-        run: |
-          docker build --cache-from $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/hi-api/
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
-          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:latest
+      - name: Login to ECR
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.REGISTRY }}
+          
+      - name: Build and push
+        uses: docker/build-push-action@v2 # build-push-action 사용
+        with:
+          context: ./Backend/hi-api
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY }}/hi-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.REGISTRY }}/hi-app:latest
+          cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
+          cache-to: type=gha,mode=max
 
 
   push_to_registry_backend_goodmorning:  
@@ -182,22 +161,21 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Login to Amazon ECR Private
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push Backend docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: goodmorning-app
-          IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
-
-        run: |
-          docker build --cache-from $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/goodmorning-api/
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
-          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:latest
+      - name: Login to ECR
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.REGISTRY }}
+          
+      - name: Build and push
+        uses: docker/build-push-action@v2 # build-push-action 사용
+        with:
+          context: ./Backend/hello-api
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY }}/goodmorning-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.REGISTRY }}/goodmorning-app:latest
+          cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
+          cache-to: type=gha,mode=max
 
   push_to_registry_backend_goodnight:  
     name: Push Backend goodnight Docker image to ECR
@@ -225,22 +203,21 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Login to Amazon ECR Private
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push Backend docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: goodnight-app
-          IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
-
-        run: |
-          docker build --cache-from $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/goodnight-api/
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
-          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:latest
+      - name: Login to ECR
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.REGISTRY }}
+          
+      - name: Build and push
+        uses: docker/build-push-action@v2 # build-push-action 사용
+        with:
+          context: ./Backend/hello-api
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY }}/goodnight-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.REGISTRY }}/goodnight-app:latest
+          cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
+          cache-to: type=gha,mode=max
 
   deploy:  
     name: Edit deploy.yaml and deploy
