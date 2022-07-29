@@ -5,20 +5,22 @@ on:
     types: [published]
   push:
     branches: [ "main" ]
-    
-env:
-  IMAGE_TAG: ${{github.ref}}-${{github.sha::6}}
 
 jobs:
   push_to_registry_frontend:  
     name: Push Frontend Docker image to ECR
     runs-on: ubuntu-18.04
+
     steps:
-    
-      - name: Define variables
-        run: |
-          git rev-parse --short HEAD > SHORT_COMMIT_HASH
-    
+      - name: Set Outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      
       - name: Check out the repo
         uses: actions/checkout@v3
           
@@ -40,6 +42,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: react-app
+          IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
           
         run: |  
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
@@ -52,7 +55,15 @@ jobs:
     name: Push Backend Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
-    
+      - name: Set Outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+        
       - name: Check out the repo
         uses: actions/checkout@v3
           
@@ -74,6 +85,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: node-app
+          IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
