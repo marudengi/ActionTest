@@ -232,43 +232,31 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
         
-      - name: Update Version
+      - name: Update Version fe
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
             version=$(cat ./Frontend/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
             sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Frontend/charts/helm-example/values.yaml
-    
-      - name: Check out the repo
-        uses: actions/checkout@v3
         
-      - name: Update Version
+      - name: Update Version hello
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
             version=$(cat ./Backend/hello-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
             sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/hello-api/charts/helm-example/values.yaml
-
-      - name: Check out the repo
-        uses: actions/checkout@v3
         
-      - name: Update Version
+      - name: Update Version hi
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
             version=$(cat ./Backend/hi-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
             sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/hi-api/charts/helm-example/values.yaml
-            
-      - name: Check out the repo
-        uses: actions/checkout@v3
         
-      - name: Update Version
+      - name: Update Version goodmorning
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
             version=$(cat ./Backend/goodmorning-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
             sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/goodmorning-api/charts/helm-example/values.yaml
-          
-      - name: Check out the repo
-        uses: actions/checkout@v3
         
-      - name: Update Version
+      - name: Update Version goodnight
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
             version=$(cat ./Backend/goodnight-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
