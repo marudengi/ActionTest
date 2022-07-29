@@ -12,4 +12,7 @@
 
 ### Dockerfile path
 - /Frontend/
-- /Backend/
+- /Backend/hello-api/
+- /Backend/hi-api/
+- /Backend/goodmorning-api/
+- /Backend/goodnight-api/
