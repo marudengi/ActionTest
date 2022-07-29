@@ -68,6 +68,7 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:latest
   deploy:  
     name: Edit deploy.yaml and deploy
+    needs: push_to_registry
     runs-on: ubuntu-18.04
     steps:
       - name: Update Version
