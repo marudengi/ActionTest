@@ -49,11 +49,12 @@ jobs:
         with:
           image: react-app
           registry: ${{ secrets.REGISTRY }} #${{ steps.login-ecr.outputs.registry }}
-          context: ./Frontend
+          directory: ./Frontend
+          enableBuildKit: true
 #           push: true
 #           tags: $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+#           cache-from: type=gha
+#           cache-to: type=gha,mode=max
         
           
 #       - name: Build, tag, and push Frontend docker image to Amazon ECR
