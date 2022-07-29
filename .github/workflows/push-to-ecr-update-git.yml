@@ -48,7 +48,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           image: react-app
-          registry: ${{ steps.login-ecr.outputs.registry }}
+          registry: ${{ secrets.REGISTRY }} #${{ steps.login-ecr.outputs.registry }}
           context: ./Frontend
 #           push: true
 #           tags: $REGISTRY/$REPOSITORY:$IMAGE_TAG
