@@ -18,8 +18,4 @@ spec:
     spec:
       containers:
         - name: react
-          image: dame94/react-nginx-app:latest
-          lifecycle:
-            preStop:
-              exec:
-                command: ["/usr/sbin/nginx","-s","quit"]
+          image: dame94/react-app:latest
