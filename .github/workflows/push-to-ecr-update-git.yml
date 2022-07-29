@@ -51,7 +51,7 @@ jobs:
         with:
           context: ./Frontend
           push: true
-          tags: $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          tags: ${{ steps.login-ecr.outputs.registry }}/react-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
           cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
           cache-to: type=gha,mode=max
 
