@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/hi-app
-  version: main-ef36f4c
+  version: main-c0d3875
 
 imagePullSecrets: []
 nameOverride: ""
