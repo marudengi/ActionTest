@@ -12,8 +12,12 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-app.get('/be', (req,res) => {
+app.get('/hi', (req,res) => {
   res.send('Hi World');
+});
+
+app.get('/good', (req,res) => {
+  res.send('good!');
 });
 
 app.listen(PORT, HOST);
