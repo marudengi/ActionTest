@@ -47,7 +47,7 @@ jobs:
         with:
           context: ./Frontend
           push: true
-          tags: REGISTRY/REPOSITORY:IMAGE_TAG
+          tags: $REGISTRY/$REPOSITORY:$IMAGE_TAG
           cache-from: type=gha
           cache-to: type=gha,mode=max
           
