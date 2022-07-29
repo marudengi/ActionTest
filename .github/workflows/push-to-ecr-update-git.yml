@@ -244,11 +244,6 @@ jobs:
           github_token: ${{ secrets.GIT_ACCESS_TOKEN }}
           commit_message: Version updated
     
-  deploy_backend:  
-    name: Edit backend deploy.yaml and deploy
-    needs: ["push_to_registry_frontend","push_to_registry_backend_hello","push_to_registry_backend_hi","push_to_registry_backend_goodmorning","push_to_registry_backend_goodnight"]
-    runs-on: ubuntu-18.04
-    steps:
       - name: Check out the repo
         uses: actions/checkout@v3
         
