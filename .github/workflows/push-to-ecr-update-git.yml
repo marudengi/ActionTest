@@ -86,6 +86,7 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: node-app
           IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+          
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
@@ -101,8 +102,8 @@ jobs:
       - name: Update Version
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
-            version=$(cat .Frontend/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
-            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" .Frontend/charts/helm-example/values.yaml
+            version=$(cat ./Frontend/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
+            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Frontend/charts/helm-example/values.yaml
 
       - name: Commit and push changes
         uses: devops-infra/action-commit-push@v0.3
