@@ -5,16 +5,47 @@ on:
     types: [published]
   push:
     branches: [ "main" ]
-    
+env:
+  IMAGE_TAG: $(echo ${GITHUB_REF##*/}-${GITHUB_SHA::6})
 
 jobs:
-  push_to_registry:  
-    name: Push Docker image to ECR
+  push_to_registry_frontend:  
+    name: Push Frontend Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
-      
-      - name: Set env
-        run: echo "IMAGE_TAG=$(echo ${GITHUB_REF##*/}-${GITHUB_SHA::6})" >> $GITHUB_ENV 
+    
+      - name: Check out the repo
+        uses: actions/checkout@v3
+          
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Configure AWS creddentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Login to Amazon ECR Private
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1        
+          
+      - name: Build, tag, and push Frontend docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: react-app
+        run: |  
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          
+          docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:latest
+          
+  push_to_registry_backend:  
+    name: Push Backend Docker image to ECR
+    runs-on: ubuntu-18.04
+    steps:
     
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -32,22 +63,11 @@ jobs:
       - name: Login to Amazon ECR Private
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Set github sha short
-        id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-
-      - name: Extract branch name
-        shell: bash
-        id: extract_branch
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         
-
       - name: Build, tag, and push Backend docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: node-app
-          IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
@@ -55,20 +75,9 @@ jobs:
           docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:latest
           
-      - name: Build, tag, and push Frontend docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: react-app
-          IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
-        run: |  
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          
-          docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:latest
   deploy:  
     name: Edit deploy.yaml and deploy
-    needs: push_to_registry
+    needs: ["push_to_registry_frontend","push_to_registry_backend"]
     runs-on: ubuntu-18.04
     steps:
       - name: Update Version
