@@ -6,7 +6,7 @@ on:
   push:
     branches: [ "main" ]
 env:
-  IMAGE_TAG: $(echo ${GITHUB_REF##*/}-${GITHUB_SHA::6})
+  IMAGE_TAG: ${GITHUB_REF##*/}-${GITHUB_SHA::6}
 
 jobs:
   push_to_registry_frontend:  
@@ -35,6 +35,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: react-app
+          
         run: |  
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
