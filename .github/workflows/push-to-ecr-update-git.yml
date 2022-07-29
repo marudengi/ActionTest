@@ -41,7 +41,7 @@ jobs:
       - name: Build and push
         uses: mr-smithers-excellent/docker-build-push@v5
         env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REGISTRY: ${{ secrets.REGISTRY }}
           REPOSITORY: react-app
           IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -49,7 +49,7 @@ jobs:
         with:
           image: react-app
           registry: ${{ steps.login-ecr.outputs.registry }}
-#           context: ./Frontend
+          context: ./Frontend
 #           push: true
 #           tags: $REGISTRY/$REPOSITORY:$IMAGE_TAG
           cache-from: type=gha
