@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+          
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        
       - name: Set Outputs
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
@@ -20,13 +26,7 @@ jobs:
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
-      
-      - name: Check out the repo
-        uses: actions/checkout@v3
-          
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
+        
       - name: Configure AWS creddentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -55,20 +55,20 @@ jobs:
     name: Push Backend Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
-      - name: Set Outputs
-        id: var
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-      
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branc
-        
       - name: Check out the repo
         uses: actions/checkout@v3
           
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+
+      - name: Set Outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
 
       - name: Configure AWS creddentials
         uses: aws-actions/configure-aws-credentials@v1
