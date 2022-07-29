@@ -7,13 +7,17 @@ on:
     branches: [ "main" ]
     
 env:
-  IMAGE_TAG: ${{github.ref}}-${{github.sha}}
+  IMAGE_TAG: ${{github.ref}}-${{github.sha::6}}
 
 jobs:
   push_to_registry_frontend:  
     name: Push Frontend Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
+    
+      - name: Define variables
+        run: |
+          git rev-parse --short HEAD > SHORT_COMMIT_HASH
     
       - name: Check out the repo
         uses: actions/checkout@v3
