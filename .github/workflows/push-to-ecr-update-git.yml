@@ -66,12 +66,15 @@ jobs:
           
           docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:latest
-
+  deploy:  
+    name: Edit deploy.yaml and deploy
+    runs-on: ubuntu-18.04
+    steps:
       - name: Update Version
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
-            version=$(cat ./charts/helm-example/values.yaml | grep version: | awk '{print $2}')
-            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./charts/helm-example/values.yaml
+            version=$(cat .Frontend/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
+            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" .Frontend/charts/helm-example/values.yaml
 
       - name: Commit and push changes
         uses: devops-infra/action-commit-push@v0.3
