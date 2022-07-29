@@ -45,7 +45,7 @@ jobs:
           IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
           
         run: |  
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
+          docker build --cache-from $REGISTRY/$REPOSITORY -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           
           docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
@@ -88,7 +88,7 @@ jobs:
           IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
           
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/hello-api/
+          docker build --cache-from $REGISTRY/$REPOSITORY -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/hello-api/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           
           docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
@@ -131,7 +131,7 @@ jobs:
           IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
 
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/hi-api/
+          docker build --cache-from $REGISTRY/$REPOSITORY -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/hi-api/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
           docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
@@ -175,7 +175,7 @@ jobs:
           IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
 
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/goodmorning-api/
+          docker build --cache-from $REGISTRY/$REPOSITORY -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/goodmorning-api/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
           docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
@@ -218,7 +218,7 @@ jobs:
           IMAGE_TAG: ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
 
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/goodnight-api/
+          docker build --cache-from $REGISTRY/$REPOSITORY -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/goodnight-api/
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
           docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
