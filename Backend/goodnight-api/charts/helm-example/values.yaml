@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/goodnight-app
-  version: main-f1b7856
+  version: main-0127735
 
 imagePullSecrets: []
 nameOverride: ""
