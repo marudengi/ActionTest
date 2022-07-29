@@ -1,0 +1,111 @@
+name: Push Docker image to ECR and update to Github
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: [ "main" ]
+    
+
+jobs:
+  push_to_registry:  
+    name: Push Docker image to ECR
+    runs-on: ubuntu-18.04
+    steps:
+      
+      - name: Set env
+        run: echo "IMAGE_TAG=$(echo ${GITHUB_REF##*/}-${GITHUB_SHA::6})" >> $GITHUB_ENV 
+    
+      - name: Check out the repo
+        uses: actions/checkout@v3
+          
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Configure AWS creddentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Login to Amazon ECR Private
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set github sha short
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Extract branch name
+        shell: bash
+        id: extract_branch
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        
+
+      - name: Build, tag, and push Backend docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: backend
+          IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Backend/
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          
+          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:latest
+          
+      - name: Build, tag, and push Frontend docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: frontend
+          IMAGE_TAG: ${{steps.extract_branch.outputs.branch}}-${{ steps.vars.outputs.sha_short }}
+        run: |  
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG Frontend/
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          
+          docker tag  $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:latest
+          
+      - uses: imranismail/setup-kustomize@v1
+      - run: |
+          kustomize edit set image $REGISTRY/backend:$IMAGE_TAG
+          kustomize edit set image $REGISTRY/frontend:$IMAGE_TAG
+          git add .
+          git commit -m "Set `app` image tag to `$IMAGE_TAG`"
+          git push
+#     - name: 'Checkout'
+#       uses: actions/checkout@master
+#     - name: 'Kustomize Build'
+#       uses: karancode/kustomize-github-action@master
+#       with:
+#         kustomize_version: '3.0.0'
+#         kustomize_build_dir: '.'
+#         kustomize_comment: true
+#         kustomize_output_file: "gitops/rendered.yaml"
+#         kustomize_build_options: "--load_restrictor none"
+#         enable_alpha_plugins: true
+#       env:
+#         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+#       - name: Check out the repo
+#         uses: actions/checkout@v3
+        
+#       - name: Setup Kustomize
+#         uses: imranismail/setup-kustomize@v1
+#         with:
+#           kustomize-version: "3.8.8"
+
+#       - name: Update Kubernetes resources
+#         run: |
+#           pwd
+#           ls -al
+#           echo "#########################################"
+#           cd k8s
+#           git pull
+#           git config --global user.email "${{secrets.GIT_EMAIL}}"
+#           git config --global user.password "${{secrets.GIT_ACCESS_TOKEN}}"
+#           git checkout main
+#           kustomize edit set image $REGISTRY/$REPOSITORY:$IMAGE_TAG
+#       - name: Sync ArgoCD App
+#         run: |
+#           argocd --insecure app sync ${{ secrets.ARGOCD_APP_PRODUCTION }}
