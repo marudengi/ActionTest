@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/hello-app
-  version: main-aaaa7e3
+  version: main-6bd90c5
 
 imagePullSecrets: []
 nameOverride: ""
