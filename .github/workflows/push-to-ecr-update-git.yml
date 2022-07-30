@@ -262,3 +262,20 @@ jobs:
         with:
           github_token: ${{ secrets.GIT_ACCESS_TOKEN }}
           commit_message: Version updated
+
+      - name: ArgoCD Application Sync Action
+        # You may pin to the exact commit or the version.
+        # uses: omegion/argocd-actions@acb1ed549f9d5139c2d2c13f1b9dde6dd70856b5
+        uses: omegion/argocd-actions@v0.2.0
+        with:
+          # ArgoCD server address
+          address: ${{ secrets.ARGOCD_APP_ADDRESS }}
+          # ArgoCD token
+          token: ${{ secrets.ARGOCD_APP_TOKEN }}
+          # Application name to sync
+          appName: |
+            test-backend-goodmorning-app
+            test-backend-goodnight-app
+            test-backend-hi-app
+            test-backend-hello-app
+            
