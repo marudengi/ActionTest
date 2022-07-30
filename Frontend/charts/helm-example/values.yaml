@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/react-app
-  version: main-1188643
+  version: main-6fc4ff1
 
 imagePullSecrets: []
 nameOverride: ""
