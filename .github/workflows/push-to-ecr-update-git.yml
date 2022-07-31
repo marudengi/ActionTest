@@ -50,7 +50,7 @@ jobs:
           cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
           cache-to: type=gha,mode=max
           
-  push_to_registry_backend_hello:  
+  push_to_registry_backend_fast-api:  
     name: Push Backend Hello Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
@@ -84,15 +84,15 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2 # build-push-action 사용
         with:
-          context: ./Backend/hello-api
+          context: ./Backend/fast-api
           push: true
           tags: |
-            ${{ secrets.REGISTRY }}/hello-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
-            ${{ secrets.REGISTRY }}/hello-app:latest
+            ${{ secrets.REGISTRY }}/fast-api:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.REGISTRY }}/fast-api:latest
           cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
           cache-to: type=gha,mode=max
 
-  push_to_registry_backend_hi:  
+  push_to_registry_backend_flask-api:  
     name: Push Backend hi Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
@@ -126,16 +126,16 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2 # build-push-action 사용
         with:
-          context: ./Backend/hi-api
+          context: ./Backend/flask-api
           push: true
           tags: |
-            ${{ secrets.REGISTRY }}/hi-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
-            ${{ secrets.REGISTRY }}/hi-app:latest
+            ${{ secrets.REGISTRY }}/flask-api:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.REGISTRY }}/flask-api:latest
           cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
           cache-to: type=gha,mode=max
 
 
-  push_to_registry_backend_goodmorning:  
+  push_to_registry_backend_spring-api:  
     name: Push Backend goodmorning Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
@@ -169,15 +169,15 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2 # build-push-action 사용
         with:
-          context: ./Backend/hello-api
+          context: ./Backend/spring-api
           push: true
           tags: |
-            ${{ secrets.REGISTRY }}/goodmorning-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
-            ${{ secrets.REGISTRY }}/goodmorning-app:latest
+            ${{ secrets.REGISTRY }}/spring-api:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.REGISTRY }}/spring-api:latest
           cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
           cache-to: type=gha,mode=max
 
-  push_to_registry_backend_goodnight:  
+  push_to_registry_backend_node-api:  
     name: Push Backend goodnight Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
@@ -211,51 +211,51 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2 # build-push-action 사용
         with:
-          context: ./Backend/hello-api
+          context: ./Backend/node-api
           push: true
           tags: |
-            ${{ secrets.REGISTRY }}/goodnight-app:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
-            ${{ secrets.REGISTRY }}/goodnight-app:latest
+            ${{ secrets.REGISTRY }}/node-api:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.REGISTRY }}/node-api:latest
           cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
           cache-to: type=gha,mode=max
 
   deploy:  
     name: Edit deploy.yaml and deploy
-    needs: ["push_to_registry_frontend","push_to_registry_backend_hello","push_to_registry_backend_hi","push_to_registry_backend_goodmorning","push_to_registry_backend_goodnight"]
+    needs: ["push_to_registry_frontend","push_to_registry_backend_fast-api","push_to_registry_backend_flask-api","push_to_registry_backend_spring-api","push_to_registry_backend_node-api"]
     runs-on: ubuntu-18.04
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
         
-      - name: Update Version fe
+      - name: Update Version react-api
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
             version=$(cat ./Frontend/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
             sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Frontend/charts/helm-example/values.yaml
         
-      - name: Update Version hello
+      - name: Update Version fast-api
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
-            version=$(cat ./Backend/hello-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
-            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/hello-api/charts/helm-example/values.yaml
+            version=$(cat ./Backend/fast-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
+            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/fast-api/charts/helm-example/values.yaml
         
-      - name: Update Version hi
+      - name: Update Version flask-api
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
-            version=$(cat ./Backend/hi-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
-            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/hi-api/charts/helm-example/values.yaml
+            version=$(cat ./Backend/flask-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
+            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/flask-api/charts/helm-example/values.yaml
         
-      - name: Update Version goodmorning
+      - name: Update Version spring-api
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
-            version=$(cat ./Backend/goodmorning-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
-            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/goodmorning-api/charts/helm-example/values.yaml
+            version=$(cat ./Backend/spring-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
+            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/spring-api/charts/helm-example/values.yaml
         
-      - name: Update Version goodnight
+      - name: Update Version node-api
         run: |
             git_hash=$(git rev-parse --short "$GITHUB_SHA")
-            version=$(cat ./Backend/goodnight-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
-            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/goodnight-api/charts/helm-example/values.yaml
+            version=$(cat ./Backend/node-api/charts/helm-example/values.yaml | grep version: | awk '{print $2}')
+            sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./Backend/node-api/charts/helm-example/values.yaml
 
       - name: Commit and push changes
         uses: devops-infra/action-commit-push@v0.3
