@@ -6,8 +6,13 @@ replicaCount: 1
 
 image:
   pullPolicy: IfNotPresent
+<<<<<<< HEAD
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/spring-api
   version: main-3501b67
+=======
+  repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/goodnight-app
+  version: main-7c67fcd
+>>>>>>> fbc70a9272955eb7466c665d471dc2993449d316
 
 imagePullSecrets: []
 nameOverride: ""
