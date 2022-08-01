@@ -1,10 +1,10 @@
-const env = process.env.NODE_ENV;
+require('dotenv').config();
 
-const config = {
- app: {
-  port: parseInt(process.env.APP_PORT),
-  host: process.env.APP_HOST
- }
-};
 
-module.exports = config[env];
+module.exports = {
+    // 서버 정보
+  app: {
+    port: process.env.PORT,
+    host: process.env.HOST
+  }
+}
