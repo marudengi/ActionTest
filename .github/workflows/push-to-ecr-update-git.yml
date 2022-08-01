@@ -5,12 +5,10 @@ on:
     types: [published]
   push:
     branches: [ "main" ]
-
 jobs:
   push_to_registry_frontend:  
     name: Push Frontend Docker image to ECR
     runs-on: ubuntu-18.04
-
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -51,7 +49,7 @@ jobs:
           cache-to: type=gha,mode=max
           
   push_to_registry_backend_fast-api:  
-    name: Push Backend Hello Docker image to ECR
+    name: Push Backend fastapi Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
       - name: Check out the repo
@@ -85,6 +83,7 @@ jobs:
         uses: docker/build-push-action@v2 # build-push-action 사용
         with:
           context: ./Backend/fast-api
+          
           push: true
           tags: |
             ${{ secrets.REGISTRY }}/fast-api:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
@@ -93,7 +92,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   push_to_registry_backend_flask-api:  
-    name: Push Backend hi Docker image to ECR
+    name: Push Backend flask Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
       - name: Check out the repo
@@ -136,7 +135,7 @@ jobs:
 
 
   push_to_registry_backend_spring-api:  
-    name: Push Backend goodmorning Docker image to ECR
+    name: Push Backend spring Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
       - name: Check out the repo
@@ -178,7 +177,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   push_to_registry_backend_node-api:  
-    name: Push Backend goodnight Docker image to ECR
+    name: Push Backend node Docker image to ECR
     runs-on: ubuntu-18.04
     steps:
       - name: Check out the repo
@@ -187,6 +186,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
+      - name: Setup node env
+        uses: actions/setup-node@v3.4.1
+        with:
+          node-version: '16'
+          
+      - name: Create .env file
+        run: |
+          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$NODE_ENV" > ./Backend/node-api/.env
+          pwd
+          ls -al
+        env:
+          NODE_ENV: ${{ toJson(secrets) }}
+        
       - name: Set Outputs
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
@@ -216,8 +228,16 @@ jobs:
           tags: |
             ${{ secrets.REGISTRY }}/node-api:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
             ${{ secrets.REGISTRY }}/node-api:latest
-          cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
+          cache-from: type=gha # 여기서 gha 는 Github Actions 용 캐시를 의미합니다.
           cache-to: type=gha,mode=max
+      - name: test
+        run: |
+          pwd
+          ls -al
+          ls -al ./Backend/node-api/
+          cat ./Backend/node-api/.env
+
+####################################################################################################
 
   deploy:  
     name: Edit deploy.yaml and deploy

@@ -14,7 +14,7 @@ rollingUpdate:
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/flask-api
-  version: main-6374092
+  version: main-7bc0820
 
 imagePullSecrets: []
 nameOverride: ""
