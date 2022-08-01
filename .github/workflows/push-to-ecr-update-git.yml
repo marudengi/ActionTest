@@ -192,7 +192,7 @@ jobs:
           
       - name: Create .env file
         run: |
-          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$NODE_ENV" > .env
+          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$NODE_ENV" > ./Backend/node-api/.env
           pwd
           ls -al
         env:
