@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/fast-api
-  version: main-7c996f1
+  version: main-6374092
 
 imagePullSecrets: []
 nameOverride: ""
