@@ -5,7 +5,7 @@ on:
     types: [published]
   push:
     branches: [ "main" ]
-jobs:          
+jobs:
   push_to_registry_frontend:  
     name: Push Frontend Docker image to ECR
     runs-on: ubuntu-18.04
@@ -83,6 +83,7 @@ jobs:
         uses: docker/build-push-action@v2 # build-push-action 사용
         with:
           context: ./Backend/fast-api
+          secret-files: NODE_ENV=./Backend/node-api/.env
           push: true
           tags: |
             ${{ secrets.REGISTRY }}/fast-api:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
