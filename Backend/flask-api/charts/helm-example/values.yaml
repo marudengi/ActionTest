@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/flask-api
-  version: main-dfd8a9b
+  version: main-8ec3e50
 
 imagePullSecrets: []
 nameOverride: ""
