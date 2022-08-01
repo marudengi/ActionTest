@@ -4,6 +4,13 @@
 
 replicaCount: 1
 
+revisionHistoryLimit: 3
+
+type: RollingUpdate
+rollingUpdate:
+  maxSurge: 3
+  maxUnavailable: 3
+
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/flask-api
