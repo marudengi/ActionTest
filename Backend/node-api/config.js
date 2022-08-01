@@ -1,8 +1,10 @@
+const env = process.env.NODE_ENV;
+
 const config = {
  app: {
-  port: 3000,
-  host: '0.0.0.0'
+  port: parseInt(process.env.APP_PORT),
+  host: process.env.APP_host
  }
 };
 
-module.exports = config;
+module.exports = config[env];
