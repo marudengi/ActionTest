@@ -5,12 +5,10 @@ on:
     types: [published]
   push:
     branches: [ "main" ]
-
-jobs:
+jobs:          
   push_to_registry_frontend:  
     name: Push Frontend Docker image to ECR
     runs-on: ubuntu-18.04
-
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -187,6 +185,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
+      - name: Setup node env
+        uses: actions/setup-node@v3.4.1
+        with:
+          node-version: '16'
+          
+      - name: Create .env file
+        run: |
+          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$NODE_ENV" > .env
+        env:
+          NODE_ENV: ${{ toJson(secrets) }}
+        
       - name: Set Outputs
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
@@ -218,6 +227,8 @@ jobs:
             ${{ secrets.REGISTRY }}/node-api:latest
           cache-from: type=gha # 여기서 gha 는 Guthub Actions 용 캐시를 의미합니다.
           cache-to: type=gha,mode=max
+
+####################################################################################################
 
   deploy:  
     name: Edit deploy.yaml and deploy
