@@ -15,7 +15,7 @@ rollingUpdate:
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/spring-api
-  version: main-7bc0820
+  version: main-ca3f490
 
 imagePullSecrets: []
 nameOverride: ""
