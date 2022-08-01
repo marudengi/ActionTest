@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/spring-api
-  version: main-6deca42
+  version: main-dfd8a9b
 
 imagePullSecrets: []
 nameOverride: ""
