@@ -1,10 +1,12 @@
 'use strict';
 
 const express = require('express');
+const config = require('./config');
+
 
 // 상수
-const PORT = 8080;
-const HOST = '0.0.0.0';
+const PORT = config.app.port;
+const HOST = config.app.host;
 
 // 앱
 const app = express();
