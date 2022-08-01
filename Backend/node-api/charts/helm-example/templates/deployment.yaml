@@ -6,6 +6,12 @@ metadata:
     {{- include "helm-example.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    type: {{ .Values.strategytype }}
+    rollingUpdate:
+      maxSurge: {{ .Values.maxSurge }}
+      maxUnavailable: {{ .Values.maxUnavailable }}
   selector:
     matchLabels:
       {{- include "helm-example.selectorLabels" . | nindent 6 }}
