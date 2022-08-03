@@ -15,7 +15,7 @@ rollingUpdate:
 image:
   pullPolicy: IfNotPresent
   repository: 142373294051.dkr.ecr.us-east-2.amazonaws.com/node-api
-  version: main-ca3f490
+  version: main-ef7eefb
 
 imagePullSecrets: []
 nameOverride: ""
